@@ -1,19 +1,26 @@
 import collections
 import os
 import tempfile
-from typing import Union, Mapping
+from typing import Mapping, Union
 
 import pkg_resources
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 
 from super_gradients.common.abstractions.abstract_logger import get_logger
-from super_gradients.common.data_interface.adnn_model_repository_data_interface import ADNNModelRepositoryDataInterfaces
+from super_gradients.common.data_interface.adnn_model_repository_data_interface import (
+    ADNNModelRepositoryDataInterfaces,
+)
 from super_gradients.common.data_types import StrictLoad
-from super_gradients.common.decorators.explicit_params_validator import explicit_params_validation
+from super_gradients.common.decorators.explicit_params_validator import (
+    explicit_params_validation,
+)
 from super_gradients.module_interfaces import HasPredict
 from super_gradients.training.pretrained_models import MODEL_URLS
-from super_gradients.training.utils.distributed_training_utils import get_local_rank, wait_for_the_master
+from super_gradients.training.utils.distributed_training_utils import (
+    get_local_rank,
+    wait_for_the_master,
+)
 from super_gradients.training.utils.utils import unwrap_model
 
 try:
@@ -323,7 +330,7 @@ def load_pretrained_weights(model: torch.nn.Module, architecture: str, pretraine
             "By downloading the pre-trained weight files you agree to comply with these terms."
         )
 
-    unique_filename = url.split("https://sghub.deci.ai/models/")[1].replace("/", "_").replace(" ", "_")
+    unique_filename = url.split("https://sg-hub-nv.s3.amazonaws.com/models/")[1].replace("/", "_").replace(" ", "_")
     map_location = torch.device("cpu")
     with wait_for_the_master(get_local_rank()):
         pretrained_state_dict = load_state_dict_from_url(url=url, map_location=map_location, file_name=unique_filename)
